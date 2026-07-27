@@ -1,5 +1,6 @@
 package com.borwen.mctranslator.fabric26;
 
+import com.borwen.mctranslator.config.CodexModelCatalog;
 import com.borwen.mctranslator.config.TranslatorConfig;
 import com.borwen.mctranslator.translate.CodexAppServerClient;
 import com.borwen.mctranslator.translate.CodexAppServerClient.ModelOption;
@@ -75,13 +76,8 @@ public final class Fabric26CodexEffortScreen extends OptionsSubScreen {
 
     private List<String> supportedEfforts() {
         CodexAppServerClient client = MctranslatorFabric26.codexClient();
-        if (client == null) return List.of();
-        String selectedModel = MctranslatorFabric26.config().codexModel;
-        return client.cachedModels().stream()
-                .filter(option -> option.model().equals(selectedModel))
-                .findFirst()
-                .map(ModelOption::reasoningEfforts)
-                .orElse(List.of());
+        List<ModelOption> models = client == null ? List.of() : client.cachedModels();
+        return CodexModelCatalog.supportedEfforts(MctranslatorFabric26.config(), models);
     }
 
     private final class EffortSelectionList
